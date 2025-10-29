@@ -6,19 +6,19 @@ export default class LoadingScene extends Phaser.Scene {
     super({ key: 'LoadingScene' })
     this.loadingProgress = 0
     this.turtleIcons = []
-    this.blackScreenDuration = loadingConfig.blackScreenDuration.value // 黑屏等待时间（毫秒）
-    this.enableBlackScreen = loadingConfig.enableBlackScreen.value // 是否启用黑屏等待阶段
+    this.blackScreenDuration = loadingConfig.blackScreenDuration.value // 검은 화면 대기 시간 (밀리초)
+    this.enableBlackScreen = loadingConfig.enableBlackScreen.value // 검은 화면 대기 단계 활성화 여부
   }
 
   preload() {
-    // 在 preload 阶段首先加载加载界面所需的基本素材
+    // preload 단계에서 먼저 로딩 화면에 필요한 기본 리소스 로드
     this.load.image('loading_screen_background', 'https://cdn-game-mcp.gambo.ai/68695e6c-a5b6-4e9d-a9dc-a6cf1fe21719/images/loading_screen_background.png')
     this.load.image('loading_turtle_icon', 'https://cdn-game-mcp.gambo.ai/edfceaf7-96d4-48f9-bf2b-204ca09edfe2/images/loading_turtle_icon.png')
     
-    // 等待基本素材加载完成后再创建加载界面
+    // 기본 리소스 로드 완료 후 로딩 화면 생성
     this.load.once('complete', () => {
       this.createLoadingUI()
-      // 延迟开始加载游戏资源，实现黑屏等待效果
+      // 게임 리소스 로드 시작 지연, 검은 화면 대기 효과 구현
       this.startDelayedGameLoading()
     })
   }
@@ -36,7 +36,7 @@ export default class LoadingScene extends Phaser.Scene {
   }
 
   createLoadingUI() {
-    // 创建加载界面背景
+    // 로딩 화면 배경 생성
     this.createBackground()
     
     // 创建加载动画和进度显示
@@ -76,10 +76,10 @@ export default class LoadingScene extends Phaser.Scene {
   }
 
   createBackground() {
-    // 创建加载界面背景
+    // 로딩 화면 배경 생성
     this.background = this.add.image(screenSize.width.value / 2, screenSize.height.value / 2, 'loading_screen_background')
     
-    // 计算缩放比例以适应屏幕
+    // 화면에 맞게 스케일 비율 계산
     const bgScaleX = screenSize.width.value / 1536
     const bgScaleY = screenSize.height.value / 1024
     const bgScale = Math.max(bgScaleX, bgScaleY)
@@ -87,15 +87,15 @@ export default class LoadingScene extends Phaser.Scene {
   }
 
   createLoadingAnimation() {
-    // 创建小乌龟图标用于加载动画
+    // 로딩 애니메이션용 작은 거북이 아이콘 생성
     const centerX = screenSize.width.value / 2
     const centerY = screenSize.height.value / 2
     
-    // 主要的乌龟图标
+    // 주요 거북이 아이콘
     this.mainTurtle = this.add.image(centerX, centerY - 50, 'loading_turtle_icon')
     
-    // 计算乌龟图标的缩放
-    const turtleScale = 0.2 // 适中大小
+    // 거북이 아이콘 스케일 계산
+    const turtleScale = 0.2 // 적절한 크기
     this.mainTurtle.setScale(turtleScale)
     
     // 创建旋转动画让乌龟慢慢转动

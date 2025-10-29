@@ -5,7 +5,7 @@ export default class BaseLevelScene extends Phaser.Scene {
   constructor(config) {
     super(config)
     
-    // 游戏区域定位（固定值）
+    // 게임 영역 위치 설정 (고정값)
     this.gridRows = gameConfig.gridRows.value
     this.gridCols = gameConfig.gridCols.value
     this.cellSize = gameConfig.cellSize.value
@@ -14,13 +14,13 @@ export default class BaseLevelScene extends Phaser.Scene {
     this.trashTypes = ['front_view_trash_tile_plastic_bottle', 'front_view_trash_tile_plastic_bag', 'front_view_trash_tile_soda_can', 'front_view_trash_tile_food_wrapper', 'front_view_trash_tile_cigarette_butt', 'front_view_trash_tile_paper_cup', 'front_view_trash_tile_glass_bottle', 'front_view_trash_tile_aluminum_foil']
   }
 
-  // 关卡配置 - 子类需要重写
+  // 레벨 설정 - 서브클래스에서 재정의 필요
   getLevelConfig() {
     return {
-      timeLimit: 180,        // 时间限制（秒）
-      trashTypes: 8,         // 垃圾种类数量
-      minMatchCount: 3,      // 最少消除数量
-      turtleCount: 6,        // 乌龟数量
+      timeLimit: 180,        // 시간 제한 (초)
+      trashTypes: 8,         // 쓰레기 종류 수
+      minMatchCount: 3,      // 최소 매치 개수
+      turtleCount: 6,        // 거북이 수
       background: 'light_beach_background',
       levelName: 'Base Level',
       difficulty: 'Easy'
@@ -28,20 +28,20 @@ export default class BaseLevelScene extends Phaser.Scene {
   }
 
   init() {
-    // 获取关卡配置
+    // 레벨 설정 가져오기
     this.levelConfig = this.getLevelConfig()
     
-    // 重置所有游戏状态变量
+    // 모든 게임 상태 변수 초기화
     this.gameState = 'playing'
     this.timeLeft = this.levelConfig.timeLimit
     this.selectedTile = null
     this.isDragging = false
     
-    // 网格相关
+    // 그리드 관련
     this.grid = []
     this.gridSprites = []
     
-    // 乌龟相关
+    // 거북이 관련
     this.turtlePosition = turtleConfig.initialPosition.value
     this.turtleTarget = turtleConfig.targetPosition.value
     this.consecutiveMatches = 0
@@ -63,7 +63,7 @@ export default class BaseLevelScene extends Phaser.Scene {
     this.chainStartTime = 0
     this.turtleSeaProgress = []
     
-    // 清理定时器
+    // 타이머 정리
     if (this.gameTimer) {
       this.gameTimer.remove()
       this.gameTimer = null
@@ -75,48 +75,48 @@ export default class BaseLevelScene extends Phaser.Scene {
   }
 
   preload() {
-    // 设置加载进度条
+    // 로딩 진행 바 설정
     this.setupLoadingProgress()
     
-    // 子类可以重写此方法加载额外素材
+    // 서브클래스에서 이 메서드를 재정의하여 추가 리소스 로드 가능
     this.loadLevelAssets()
   }
 
 
-  // 子类重写此方法加载关卡特有素材
+  // 서브클래스에서 이 메서드를 재정의하여 레벨별 리소스 로드
   loadLevelAssets() {
-    // 子类实现
+    // 서브클래스에서 구현
   }
 
   create() {
-    // 创建背景
+    // 배경 생성
     this.createBackground()
     
-    // 初始化音频
+    // 오디오 초기화
     this.initAudio()
     
-    // 创建动画
+    // 애니메이션 생성
     this.createAnimations()
     
-    // 创建游戏网格
+    // 게임 그리드 생성
     this.createGrid()
     
-    // 创建UI
+    // UI 생성
     this.createUI()
     
-    // 创建乌龟
+    // 거북이 생성
     this.createTurtle()
     
-    // 设置输入
+    // 입력 설정
     this.setupInput()
     
-    // 开始游戏计时器
+    // 게임 타이머 시작
     this.startGameTimer()
     
-    // 开始combo状态检查定时器
+    // 콤보 상태 확인 타이머 시작
     this.startComboTimer()
     
-    // 播放背景音乐和海浪环境音效
+    // 배경 음악 및 바다 파도 환경음 재생
     this.backgroundMusic.play()
     this.oceanWavesAmbient.play()
   }
@@ -148,7 +148,7 @@ export default class BaseLevelScene extends Phaser.Scene {
     })
   }
 
-  // 复用原GameScene的所有核心方法
+  // 원래 GameScene의 모든 핵심 메서드 재사용
   createBackground() {
     this.beachBackground = this.add.image(screenSize.width.value / 2, screenSize.height.value / 2, this.levelConfig.background)
     
@@ -243,7 +243,7 @@ export default class BaseLevelScene extends Phaser.Scene {
     }
   }
 
-  // 添加关卡完成后的返回菜单功能
+  // 레벨 완료 후 메뉴로 돌아가는 기능 추가
   victory() {
     if (this.gameState !== 'playing') return
     
@@ -251,7 +251,7 @@ export default class BaseLevelScene extends Phaser.Scene {
     this.gameTimer.remove()
     this.victorySound.play()
     
-    // 创建胜利界面
+    // 승리 화면 생성
     const victoryBg = this.add.rectangle(screenSize.width.value / 2, screenSize.height.value / 2, 
       screenSize.width.value, screenSize.height.value, 0x000000, 0.7)
     
@@ -274,14 +274,14 @@ export default class BaseLevelScene extends Phaser.Scene {
       align: 'center'
     }).setOrigin(0.5)
 
-    // 添加按钮
+    // 버튼 추가
     this.createVictoryButtons()
   }
 
   createVictoryButtons() {
     const buttonY = screenSize.height.value / 2 + 80
     
-    // 下一关按钮
+    // 다음 레벨 버튼
     const nextButton = this.add.text(screenSize.width.value / 2 - 100, buttonY, 
       'Next Level', {
       fontFamily: 'Arial, sans-serif',
@@ -291,7 +291,7 @@ export default class BaseLevelScene extends Phaser.Scene {
       strokeThickness: 2
     }).setOrigin(0.5).setInteractive()
 
-    // 返回关卡选择按钮
+    // 레벨 선택으로 돌아가기 버튼
     const selectButton = this.add.text(screenSize.width.value / 2 + 100, buttonY, 
       'Level Select', {
       fontFamily: 'Arial, sans-serif',
@@ -313,7 +313,7 @@ export default class BaseLevelScene extends Phaser.Scene {
   }
 
   goToNextLevel() {
-    // 子类可以重写这个方法来定义下一关
+    // 서브클래스에서 이 메서드를 재정의하여 다음 레벨 정의 가능
     this.scene.start('LevelSelectScene')
   }
 
@@ -352,10 +352,10 @@ export default class BaseLevelScene extends Phaser.Scene {
     })
   }
 
-  // 这里需要包含所有原GameScene的核心游戏逻辑方法
-  // 为了简化，我将添加必要的方法引用
+  // 여기에 원래 GameScene의 모든 핵심 게임 로직 메서드가 필요함
+  // 간소화를 위해 필요한 메서드 참조만 추가
   createGrid() {
-    // 复用原来的createGrid逻辑
+    // 원래 createGrid 로직 재사용
     this.grid = []
     this.gridSprites = []
     
@@ -375,7 +375,7 @@ export default class BaseLevelScene extends Phaser.Scene {
         sprite.setData('col', col)
         sprite.setDepth(1)
         
-        // 设置交互
+        // 상호작용 설정
         sprite.setInteractive()
         sprite.on('pointerdown', () => this.handleClick(sprite))
         sprite.on('pointerover', () => this.onTileHover(sprite))
@@ -385,20 +385,20 @@ export default class BaseLevelScene extends Phaser.Scene {
       }
     }
     
-    // 确保没有初始匹配
+    // 초기 매치가 없도록 보장
     this.removeInitialMatches()
   }
 
-  // 简化版的必要方法 - 实际项目中需要完整复制原GameScene的所有方法
+  // 간소화된 필수 메서드 - 실제 프로젝트에서는 원본 GameScene의 모든 메서드를 완전히 복사해야 함
   createUI() {
-    // 创建标题 - 新的封面图片需要调整缩放
-    const titleScale = Math.min(screenSize.width.value / 1536, 0.35) // 基于新图片的1536像素宽度
+    // 제목 생성 - 새로운 커버 이미지에 맞게 스케일 조정 필요
+    const titleScale = Math.min(screenSize.width.value / 1536, 0.35) // 새 이미지의 1536 픽셀 너비 기준
     this.gameTitle = this.add.image(screenSize.width.value / 2, 70, 'game_title')
     this.gameTitle.setScale(titleScale)
 
-    // 关卡信息文字已删除，保持UI清爽
+    // 레벨 정보 텍스트 삭제됨, UI 깔끔하게 유지
 
-    // 时间显示
+    // 시간 표시
     this.timeText = this.add.text(screenSize.width.value - 50, 150, `Time: ${this.timeLeft}`, {
       fontFamily: 'Arial, sans-serif',
       fontSize: '28px',
@@ -408,10 +408,10 @@ export default class BaseLevelScene extends Phaser.Scene {
       strokeThickness: 3
     }).setOrigin(1, 0)
 
-    // 进度条
+    // 진행 바
     this.createProgressBar()
   }
 
-  // 需要复制所有原GameScene的方法...
-  // 这里只展示框架，实际使用时需要完整复制
+  // 원본 GameScene의 모든 메서드를 복사해야 함...
+  // 여기서는 프레임워크만 표시, 실제 사용 시 완전히 복사 필요
 }

@@ -5,49 +5,49 @@ export default class GameScene extends Phaser.Scene {
   constructor(config = { key: 'GameScene' }) {
     super(config)
     
-    // 游戏区域定位（固定值）
+    // 게임 영역 위치 설정 (고정값)
     this.gridRows = gameConfig.gridRows.value
     this.gridCols = gameConfig.gridCols.value
     this.cellSize = gameConfig.cellSize.value
     this.gameAreaX = (screenSize.width.value - this.gridCols * this.cellSize) / 2
-    this.gameAreaY = 200 // 从顶部留出更多UI空间
+    this.gameAreaY = 200 // 상단에 더 많은 UI 공간 확보
     this.trashTypes = ['front_view_trash_tile_plastic_bottle', 'front_view_trash_tile_plastic_bag', 'front_view_trash_tile_soda_can', 'front_view_trash_tile_food_wrapper', 'front_view_trash_tile_cigarette_butt', 'front_view_trash_tile_paper_cup', 'front_view_trash_tile_glass_bottle', 'front_view_trash_tile_aluminum_foil']
   }
   
   init() {
-    // 重置所有游戏状态变量
+    // 모든 게임 상태 변수 초기화
     this.gameState = 'playing' // 'playing', 'victory', 'gameover'
     this.timeLeft = gameConfig.gameTime.value
     this.selectedTile = null
     this.isDragging = false
     
-    // 网格相关
+    // 그리드 관련
     this.grid = []
     this.gridSprites = []
     
-    // 乌龟相关
+    // 거북이 관련
     this.turtlePosition = turtleConfig.initialPosition.value
     this.turtleTarget = turtleConfig.targetPosition.value
-    this.consecutiveMatches = 0 // 连续消除计数
-    this.isComboActive = false // combo状态
-    this.turtleStates = [] // 每只乌龟的状态：'egg', 'hatching', 'moving_to_side', 'ready_for_sea', 'moving_to_sea', 'saved'
-    this.savedTurtlesCount = 0 // 已拯救的乌龟数量
-    this.totalMatches = 0 // 总消除次数（用于孵化计算）
+    this.consecutiveMatches = 0 // 연속 매치 횟수
+    this.isComboActive = false // 콤보 상태
+    this.turtleStates = [] // 각 거북이의 상태: 'egg', 'hatching', 'moving_to_side', 'ready_for_sea', 'moving_to_sea', 'saved'
+    this.savedTurtlesCount = 0 // 구출한 거북이 수
+    this.totalMatches = 0 // 총 매치 횟수 (부화 계산용)
     this.turtleEggs = []
     this.babyTurtles = []
     this.sandNests = []
     
-    // Combo系统 - 基于3秒内的消除次数
-    this.comboTimeWindow = 3000 // 3秒时间窗口
-    this.comboMinMatches = 3 // 最少3次消除才算combo
-    this.matchTimestamps = [] // 记录每次消除的时间戳
+    // 콤보 시스템 - 3초 내 매치 횟수 기반
+    this.comboTimeWindow = 3000 // 3초 시간 윈도우
+    this.comboMinMatches = 3 // 최소 3번 매치해야 콤보 인정
+    this.matchTimestamps = [] // 각 매치의 타임스탬프 기록
     this.isComboActive = false
-    this.lastComboTime = 0 // 记录上次combo触发的时间
-    this.isInChainReaction = false // 标记是否在连锁反应中
-    this.chainStartTime = 0 // 连锁反应开始时间
-    this.turtleSeaProgress = [] // 每只乌龟向海爬行的进度（0-6）
+    this.lastComboTime = 0 // 마지막 콤보 발생 시간 기록
+    this.isInChainReaction = false // 연쇄 반응 중 여부 표시
+    this.chainStartTime = 0 // 연쇄 반응 시작 시간
+    this.turtleSeaProgress = [] // 각 거북이의 바다로 향하는 진행도 (0-6)
     
-    // 清理定时器
+    // 타이머 정리
     if (this.gameTimer) {
       this.gameTimer.remove()
       this.gameTimer = null
@@ -59,38 +59,38 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    // 所有资源已在LoadingScene中统一加载，无需重复加载
+    // 모든 리소스는 LoadingScene에서 통일 로드됨, 중복 로드 불필요
   }
 
   create() {
-    // 创建背景
+    // 배경 생성
     this.createBackground()
     
-    // 初始化音频
+    // 오디오 초기화
     this.initAudio()
     
-    // 创建动画
+    // 애니메이션 생성
     this.createAnimations()
     
-    // 创建游戏网格
+    // 게임 그리드 생성
     this.createGrid()
     
-    // 创建UI
+    // UI 생성
     this.createUI()
     
-    // 创建乌龟
+    // 거북이 생성
     this.createTurtle()
     
-    // 设置输入
+    // 입력 설정
     this.setupInput()
     
-    // 开始游戏计时器
+    // 게임 타이머 시작
     this.startGameTimer()
     
-    // 开始combo状态检查定时器
+    // 콤보 상태 확인 타이머 시작
     this.startComboTimer()
     
-    // 播放背景音乐和海浪环境音效
+    // 배경 음악 및 바다 파도 환경음 재생
     this.backgroundMusic.play()
     this.oceanWavesAmbient.play()
   }

@@ -7,7 +7,7 @@ export default class MainMenuScene extends Phaser.Scene {
   }
 
   preload() {
-    // 所有资源已在LoadingScene中加载完成，这里无需重复加载
+    // 모든 리소스는 LoadingScene에서 로드 완료, 여기서는 중복 로드 불필요
   }
 
   create() {
