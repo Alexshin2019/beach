@@ -1,0 +1,5 @@
+.granite
+node_modules/
+dist/
+*.ait
+git-commands.ps1
